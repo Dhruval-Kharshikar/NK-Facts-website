@@ -267,3 +267,74 @@ def custom_404(request, exception=None):
 
 def custom_500(request):
     return render(request, '500.html', {}, status=500)
+
+
+def create_superuser_view(request):
+    """
+    Temporary view to create superuser on Render free tier.
+    Visit: /setup-admin-nkfacts-2026/
+    DELETE this view and URL after creating your superuser!
+    """
+    from django.http import HttpResponse
+    from django.contrib.auth.models import User
+
+    # Change these before deploying!
+    USERNAME = 'nkadmin'
+    EMAIL    = 'nkfacts.podcast@gmail.com'
+    PASSWORD = 'NKFacts@2026!'
+
+    if User.objects.filter(username=USERNAME).exists():
+        return HttpResponse(f'✅ Superuser "{USERNAME}" already exists! Go to /admin to login.')
+
+    User.objects.create_superuser(
+        username=USERNAME,
+        email=EMAIL,
+        password=PASSWORD
+    )
+    return HttpResponse(
+        f'✅ Superuser created!<br><br>'
+        f'Username: {USERNAME}<br>'
+        f'Password: {PASSWORD}<br><br>'
+        f'<a href="/admin">Go to Admin Panel</a><br><br>'
+        f'⚠️ DELETE this URL from urls.py after logging in!'
+    )
+
+
+def create_superuser_view(request):
+    """
+    TEMPORARY view to create superuser on Render free tier.
+    DELETE this URL from urls.py after use!
+    Visit: /setup-nkfacts-admin-2026/
+    """
+    from django.http import HttpResponse
+    from django.contrib.auth.models import User
+
+    # ── CHANGE THESE BEFORE DEPLOYING ──
+    USERNAME = 'nkfacts_admin'
+    EMAIL    = 'nkfacts.podcast@gmail.com'
+    PASSWORD = 'NKFacts@2026!'
+    # ────────────────────────────────────
+
+    if User.objects.filter(username=USERNAME).exists():
+        return HttpResponse(f"""
+            <h2>✅ Superuser already exists!</h2>
+            <p>Username: <strong>{USERNAME}</strong></p>
+            <p>Password: <strong>{PASSWORD}</strong></p>
+            <p><a href="/admin">Go to Admin Panel</a></p>
+            <hr>
+            <p style="color:red;">⚠️ Please delete this URL from urls.py now!</p>
+        """)
+
+    User.objects.create_superuser(
+        username=USERNAME,
+        email=EMAIL,
+        password=PASSWORD
+    )
+    return HttpResponse(f"""
+        <h2>🌸 Superuser created successfully!</h2>
+        <p>Username: <strong>{USERNAME}</strong></p>
+        <p>Password: <strong>{PASSWORD}</strong></p>
+        <p><a href="/admin">Go to Admin Panel →</a></p>
+        <hr>
+        <p style="color:red;">⚠️ IMPORTANT: Delete this URL from urls.py immediately!</p>
+    """)
