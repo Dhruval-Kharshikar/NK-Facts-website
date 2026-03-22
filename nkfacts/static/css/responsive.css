@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════
+   responsive.css
+   All media queries for mobile / tablet
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hide search bar on small screens ── */
+@media (max-width: 900px) {
+  .navbar-search { display: none; }
+}
+
+/* ── Mobile layout ── */
+@media (max-width: 768px) {
+
+  /* Hamburger menu */
+  .nav-links {
+    display: none; flex-direction: column; gap: .3rem;
+    position: absolute; top: 70px; left: 0; right: 0;
+    background: var(--card-bg); padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+  }
+  .nav-links.open { display: flex; }
+  .hamburger { display: flex; }
+
+  /* Page layouts */
+  .about-grid    { grid-template-columns: 1fr; }
+  .detail-grid   { grid-template-columns: 1fr; }
+  .footer-top    { grid-template-columns: 1fr; gap: 2rem; }
+  .form-row      { grid-template-columns: 1fr; }
+
+  /* Podcast grid — 1 column on mobile */
+  .podcast-grid  { grid-template-columns: 1fr; }
+
+  /* Hero */
+  .hero { padding: 4rem 1.5rem 3rem; }
+  .hero h1 { font-size: 2.2rem; }
+
+  /* Detail page */
+  .detail-thumb { max-width: 280px; margin: 0 auto; }
+
+  /* Auth card */
+  .auth-card { padding: 2rem 1.5rem; }
+
+  /* Section padding */
+  .section { padding: 3rem 1.5rem; }
+}
+
+/* ── Tiny screens ── */
+@media (max-width: 480px) {
+  .cat-chips { gap: .4rem; }
+  .cat-chip  { font-size: .8rem; padding: .4rem .9rem; }
+  .btn       { padding: .6rem 1.4rem; font-size: .9rem; }
+  .stats-row { gap: .6rem; }
+  .stat-pill { padding: .4rem .9rem; }
+}

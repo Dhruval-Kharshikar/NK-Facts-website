@@ -1,0 +1,16 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Server Error – NK Facts{% endblock %}
+
+{% block content %}
+<section style="min-height:70vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:4rem 2rem; background:linear-gradient(160deg,var(--white),var(--pink-50));">
+  <div>
+    <div style="font-size:5rem; margin-bottom:1rem;">😔</div>
+    <h1 style="font-family:var(--font-display); font-size:5rem; color:var(--pink-300); margin-bottom:.5rem; line-height:1;">500</h1>
+    <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-bottom:1rem;">Something Went Wrong</h2>
+    <p style="color:var(--gray-500); max-width:420px; margin:0 auto 2rem; font-size:1rem;">
+      We ran into a little problem on our end. Please try again in a moment.
+    </p>
+    <a href="{% url 'home' %}" class="btn btn-primary">🏠 &nbsp; Go Home</a>
+  </div>
+</section>
+{% endblock %}

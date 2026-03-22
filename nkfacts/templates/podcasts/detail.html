@@ -1,0 +1,97 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}{{ podcast.title }} – NK Facts{% endblock %}
+
+{% block content %}
+
+<section class="detail-hero">
+  <div class="container">
+    <!-- BREADCRUMB -->
+    <p style="margin-bottom:1rem; font-size:.88rem;">
+      <a href="{% url 'home' %}" style="color:var(--gray-300); text-decoration:none;">Home</a>
+      &nbsp;/&nbsp;
+      {% if podcast.category %}
+      <a href="{% url 'categories' %}?cat={{ podcast.category.slug }}" style="color:var(--gray-300); text-decoration:none;">
+        {{ podcast.category.icon }} {{ podcast.category.name }}
+      </a>
+      {% else %}
+      <a href="{% url 'categories' %}" style="color:var(--gray-300); text-decoration:none;">Episodes</a>
+      {% endif %}
+      &nbsp;/&nbsp;
+      <span style="color:var(--pink-500);">{{ podcast.title }}</span>
+    </p>
+
+    <div class="detail-grid">
+      <!-- THUMBNAIL -->
+      <div class="detail-thumb">
+        {% if podcast.get_thumbnail %}
+          <img src="{{ podcast.get_thumbnail }}" alt="{{ podcast.title }}"/>
+        {% else %}
+          <span style="font-size:5rem;">{{ podcast.get_icon }}</span>
+        {% endif %}
+      </div>
+
+      <!-- INFO -->
+      <div class="detail-info">
+        <p class="ep-label">
+          {% if podcast.category %}{{ podcast.category.name }}{% endif %}
+          &nbsp;·&nbsp; Episode {{ podcast.episode_number }}
+          {% if podcast.duration %}&nbsp;·&nbsp; {{ podcast.duration }}{% endif %}
+        </p>
+        <h1>{{ podcast.title }}</h1>
+        <p style="color:var(--gray-500); line-height:1.8; margin-bottom:1.5rem;">{{ podcast.description }}</p>
+
+        <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+          {% if podcast.category %}
+          <a href="{% url 'categories' %}?cat={{ podcast.category.slug }}" class="btn btn-outline" style="padding:.5rem 1.2rem; font-size:.88rem;">
+            {{ podcast.category.icon }} {{ podcast.category.name }}
+          </a>
+          {% endif %}
+          {% if podcast.spotify_link %}
+          <a href="{{ podcast.spotify_link }}" target="_blank" class="spotify-btn" style="padding:.5rem 1.2rem; font-size:.88rem; background:#1db954;">
+            🎵 Play on Spotify
+          </a>
+          {% endif %}
+          <a href="{% url 'reviews' %}?episode={{ podcast.pk }}" class="btn btn-outline" style="padding:.5rem 1.2rem; font-size:.88rem;">
+            ⭐ Write a Review
+          </a>
+        </div>
+
+        <!-- AUDIO PLAYER -->
+        {% if podcast.get_audio %}
+        <div class="audio-player">
+          <p style="font-size:.85rem; font-weight:600; color:var(--pink-600); margin-bottom:.8rem;">🎧 &nbsp; Play Episode</p>
+          <audio controls style="width:100%;">
+            <source src="{{ podcast.get_audio }}" type="audio/mpeg"/>
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        {% else %}
+        <div class="audio-player" style="text-align:center;">
+          <p style="font-size:.88rem; color:var(--gray-500);">
+            🎵 Audio coming soon — follow us on
+            <a href="{% url 'spotify' %}" style="color:var(--pink-500); font-weight:600;">Spotify</a>
+            to listen when it drops!
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED EPISODES -->
+{% if related %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">More Like This</span>
+      <h2 class="section-title">Related <em>Episodes</em></h2>
+    </div>
+    <div class="podcast-grid">
+      {% for r in related %}{% include 'podcasts/_podcast_card.html' with p=r %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

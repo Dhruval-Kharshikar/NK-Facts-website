@@ -1,0 +1,25 @@
+/* ═══════════════════════════════════════════════════════
+   animations.css
+   All keyframe animations and transitions
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-30px, 20px) scale(1.05); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(20px, -30px) scale(1.04); }
+}
+
+/* Grid fade-in — prevents flash of unstyled content on category page */
+@keyframes gridFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

@@ -1,0 +1,103 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Categories – NK Facts{% endblock %}
+
+{% block content %}
+
+<section style="padding:3.5rem 2rem 2rem; background:linear-gradient(160deg,var(--white),var(--pink-50)); text-align:center;">
+  <span class="section-label">Explore</span>
+  <h1 style="font-family:var(--font-display); font-size:clamp(2rem,5vw,3rem); margin-bottom:.8rem;">All <em style="color:var(--pink-500);">Categories</em></h1>
+  <p style="color:var(--gray-500); max-width:480px; margin:0 auto;">Filter by topic and discover episodes that spark your curiosity.</p>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- FILTER CHIPS -->
+    <div class="cat-chips">
+      <a href="{% url 'categories' %}" class="cat-chip {% if not selected %}active{% endif %}">🎙️ All</a>
+      {% for cat in categories %}
+      <a href="{% url 'categories' %}?cat={{ cat.slug }}"
+         class="cat-chip {% if selected == cat.slug %}active{% endif %}">
+        {{ cat.icon }} {{ cat.name }}
+      </a>
+      {% endfor %}
+    </div>
+
+    {% if not selected %}
+      <!-- ══ ALL VIEW: one section per category ══ -->
+      {% for slug, data in podcasts_by_cat.items %}
+      <div class="cat-section">
+        <div class="cat-section-header">
+          <div class="cat-icon">{{ data.cat.icon }}</div>
+          <div>
+            <h2>{{ data.cat.name }}</h2>
+            <p>{{ data.cat.podcasts.count }} episode{{ data.cat.podcasts.count|pluralize }}</p>
+          </div>
+          <a href="{% url 'categories' %}?cat={{ data.cat.slug }}" class="btn btn-outline" style="margin-left:auto;padding:.4rem 1.1rem;font-size:.85rem;">View All →</a>
+        </div>
+        <div class="podcast-grid">
+          {% for p in data.episodes %}{% include 'podcasts/_podcast_card.html' with p=p %}{% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+
+      {% if not podcasts_by_cat %}
+      <div class="empty-state">
+        <span class="emoji">🎙️</span>
+        <h3>Episodes Coming Soon!</h3>
+        <p>We're hard at work recording amazing content. Check back soon!</p>
+        <a href="{% url 'spotify' %}" class="btn btn-primary" style="margin-top:1.2rem;">Follow on Spotify</a>
+      </div>
+      {% endif %}
+
+    {% else %}
+      <!-- ══ SINGLE CATEGORY VIEW with pagination ══ -->
+      <div style="margin-bottom:1.5rem; display:flex; align-items:center; gap:.8rem;">
+        <span style="font-size:2rem;">{{ selected_cat.icon }}</span>
+        <h2 style="font-family:var(--font-display); font-size:1.6rem;">
+          {{ selected_cat.name }}
+          <span style="font-size:1rem; color:var(--gray-300); font-family:var(--font-body);">
+            &nbsp;({{ podcasts.paginator.count }} episode{{ podcasts.paginator.count|pluralize }})
+          </span>
+        </h2>
+      </div>
+
+      {% if podcasts %}
+        <div class="podcast-grid">
+          {% for p in podcasts %}{% include 'podcasts/_podcast_card.html' with p=p %}{% endfor %}
+        </div>
+
+        <!-- PAGINATION -->
+        {% if podcasts.has_other_pages %}
+        <div style="display:flex; justify-content:center; gap:.5rem; margin-top:2.5rem; flex-wrap:wrap;">
+          {% if podcasts.has_previous %}
+          <a href="?cat={{ selected }}&page={{ podcasts.previous_page_number }}" class="btn btn-outline" style="padding:.5rem 1.2rem; font-size:.88rem;">← Previous</a>
+          {% endif %}
+
+          {% for num in podcasts.paginator.page_range %}
+            {% if podcasts.number == num %}
+            <span class="btn btn-primary" style="padding:.5rem 1rem; font-size:.88rem;">{{ num }}</span>
+            {% elif num > podcasts.number|add:'-3' and num < podcasts.number|add:'3' %}
+            <a href="?cat={{ selected }}&page={{ num }}" class="btn btn-outline" style="padding:.5rem 1rem; font-size:.88rem;">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if podcasts.has_next %}
+          <a href="?cat={{ selected }}&page={{ podcasts.next_page_number }}" class="btn btn-outline" style="padding:.5rem 1.2rem; font-size:.88rem;">Next →</a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      {% else %}
+        <div class="empty-state">
+          <span class="emoji">{{ selected_cat.icon }}</span>
+          <h3>No episodes in {{ selected_cat.name }} yet!</h3>
+          <p>Follow us on Spotify to be the first to know when new episodes drop.</p>
+          <a href="{% url 'spotify' %}" class="btn btn-primary" style="margin-top:1.2rem;">Follow on Spotify</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

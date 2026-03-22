@@ -1,0 +1,50 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Sign Up – NK Facts{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card" style="max-width:520px;">
+    <div class="auth-logo">NK</div>
+    <h1 class="auth-title">Join NK Facts 🌸</h1>
+    <p class="auth-sub">Create your free account and start exploring</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="first_name">First Name</label>
+          <input class="form-input" type="text" id="first_name" name="first_name" placeholder="First name" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="last_name">Last Name</label>
+          <input class="form-input" type="text" id="last_name" name="last_name" placeholder="Last name"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-input" type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="your@email.com" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password1">Password</label>
+        <input class="form-input" type="password" id="password1" name="password1" placeholder="Create a password" required autocomplete="new-password"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password2">Confirm Password</label>
+        <input class="form-input" type="password" id="password2" name="password2" placeholder="Repeat your password" required autocomplete="new-password"/>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Create Account 💕</button>
+    </form>
+
+    <div class="auth-switch">
+      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+    </div>
+    <div class="auth-switch" style="margin-top:.6rem;">
+      <a href="{% url 'home' %}">← Back to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

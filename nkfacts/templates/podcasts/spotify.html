@@ -1,0 +1,129 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Spotify – NK Facts{% endblock %}
+
+{% block content %}
+
+<section class="spotify-hero">
+  <div class="hero-badge">🎵 &nbsp; Stream Anywhere</div>
+  <h1 style="font-family:var(--font-display); font-size:clamp(2.2rem,5vw,3.5rem); margin-bottom:1rem;">Listen on <em style="color:var(--pink-500);">Spotify</em></h1>
+  <p style="max-width:500px; margin:0 auto; color:var(--gray-500); font-size:1.05rem;">Follow NK Facts on Spotify and never miss a new episode.</p>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- SYNC RESULT BANNER (admin only sees this) -->
+    {% if sync_result %}
+    <div class="alert alert-{{ sync_result.type }}" style="max-width:600px; margin:0 auto 2rem; justify-content:center; font-size:1rem;">
+      {% if sync_result.type == 'success' %}✅{% else %}⚠️{% endif %}
+      &nbsp;{{ sync_result.msg }}
+    </div>
+    {% endif %}
+
+    <!-- SPOTIFY CARD (visible to everyone) -->
+    <div class="spotify-card">
+      <div class="spotify-icon">🎵</div>
+      <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-bottom:.8rem;">
+        {% if profile %}{{ profile.show_name }}{% else %}NK Facts Podcast{% endif %}
+      </h2>
+      <p style="color:var(--gray-500); margin-bottom:1.5rem; max-width:420px; margin-left:auto; margin-right:auto;text-align: left;">
+        {% if profile %}{{ profile.show_description|linebreaksbr }}{% else %}Curious facts about nature, science, history, and the world around us.{% endif %}
+      </p>
+      <a href="{% if profile %}{{ profile.show_url }}{% else %}https://open.spotify.com{% endif %}" target="_blank" class="spotify-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        Open in Spotify
+      </a>
+      {% if profile and profile.last_synced %}
+      <p style="margin-top:1.2rem; font-size:.82rem; color:var(--gray-300);">
+        Last synced: {{ profile.last_synced|date:"M d, Y – H:i" }}
+      </p>
+      {% endif %}
+    </div>
+
+    <!-- ═══ ADMIN ONLY PANEL ═══ -->
+    {% if user.is_superuser or user.is_staff %}
+    <div style="background:var(--white); border:2px solid var(--pink-300); border-radius:var(--radius); padding:2.5rem; max-width:680px; margin:0 auto 3rem; box-shadow:var(--shadow-md); position:relative;">
+
+      <!-- Admin badge -->
+      <div style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--pink-400),var(--pink-500)); color:#fff; padding:.3rem 1.2rem; border-radius:99px; font-size:.8rem; font-weight:700; letter-spacing:.05em; white-space:nowrap;">
+        🔐 ADMIN CONTROLS
+      </div>
+
+      <h2 style="font-family:var(--font-display); font-size:1.5rem; margin-bottom:.6rem; text-align:center; margin-top:.5rem;">🔄 Sync Episodes from Spotify</h2>
+      <p style="color:var(--gray-500); text-align:center; margin-bottom:1.5rem; font-size:.95rem;">
+        Upload an episode on Spotify → click Sync → it appears on your website instantly.
+      </p>
+
+      <form method="post" style="text-align:center;">
+        {% csrf_token %}
+        <button name="sync" type="submit" class="btn btn-primary" style="font-size:1rem; padding:.8rem 2.5rem;">
+          🔄 &nbsp; Sync Episodes Now
+        </button>
+      </form>
+
+      <p style="text-align:center; margin-top:.8rem; font-size:.82rem; color:var(--gray-400);">
+        Fetches your RSS feed and adds any new episodes automatically.
+      </p>
+
+      <!-- HOW TO FIND RSS URL -->
+      <div style="margin-top:1.8rem; background:var(--pink-50); border-radius:var(--radius-sm); padding:1.3rem; border:1px solid var(--pink-100);">
+        <p style="font-weight:600; font-size:.9rem; margin-bottom:.8rem; color:var(--pink-600);">📋 One-time setup — add your RSS Feed URL:</p>
+        <ol style="padding-left:1.3rem; color:var(--gray-500); font-size:.88rem; line-height:2.2;">
+          <li>Go to <strong>podcasters.spotify.com</strong></li>
+          <li>Select your podcast show</li>
+          <li>Click <strong>Settings → RSS Feed</strong> and copy the URL</li>
+          <li>Go to <a href="/admin/podcasts/spotifyprofile/" style="color:var(--pink-500); font-weight:600;">Admin → Spotify Profiles</a></li>
+          <li>Paste the RSS URL and save — then click Sync above ✅</li>
+        </ol>
+      </div>
+
+      <div style="margin-top:1.2rem; text-align:center;">
+        <a href="/admin/podcasts/podcast/add/" class="btn btn-outline" style="font-size:.88rem; padding:.5rem 1.3rem;">
+          ➕ &nbsp; Add Episode Manually
+        </a>
+        <a href="/admin/podcasts/podcast/" class="btn btn-outline" style="font-size:.88rem; padding:.5rem 1.3rem; margin-left:.5rem;">
+          📋 &nbsp; Manage All Episodes
+        </a>
+      </div>
+    </div>
+    {% endif %}
+    <!-- ═══ END ADMIN PANEL ═══ -->
+
+    <!-- HOW TO LISTEN (everyone sees this) -->
+    <div class="section-header">
+      <span class="section-label">Getting Started</span>
+      <h2 class="section-title">How to <em>Listen</em></h2>
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,320px)); justify-content:center; gap:1.5rem; margin:0 auto 3rem;">
+      <div class="value-card">
+        <div class="value-icon">1️⃣</div>
+        <h3>Open Spotify</h3>
+        <p>Download Spotify for free on any device — mobile, desktop, or web.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">2️⃣</div>
+        <h3>Search NK Facts</h3>
+        <p>Type "NK Facts" in the search bar to find our show instantly.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">3️⃣</div>
+        <h3>Follow & Listen</h3>
+        <p>Hit follow to get notified of new episodes and start streaming!</p>
+      </div>
+    </div>
+
+    <!-- PLATFORMS -->
+    <div class="section-header">
+      <span class="section-label">Also Available</span>
+      <h2 class="section-title">Listen <em>Anywhere</em></h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
+      <a href="https://open.spotify.com/show/7APAhMfD1jBEazGIbzmzrF" target="_blank" style="background:#1db954;color:#fff;padding:.7rem 1.6rem;border-radius:99px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.5rem;">🎵 Spotify</a>
+      <a href="https://podcasts.apple.com/us/podcast/nk-facts/id1554792617" target="_blank" style="background:#9b59b6;color:#fff;padding:.7rem 1.6rem;border-radius:99px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.5rem;">🍎 Apple Podcasts</a>
+      <a href="https://www.podbean.com/podcast-detail/ezcjv-1f0a98/NK-Facts%E0%BF%90-Podcast" target="_blank" style="background:#729f00;color:#fff;padding:.7rem 1.6rem;border-radius:99px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.5rem;">🎙️ PodBean</a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

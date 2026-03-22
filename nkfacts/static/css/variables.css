@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════════════════════
+   variables.css
+   All CSS custom properties — light & dark theme tokens
+   ═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── LIGHT MODE (default) ── */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Pink palette */
+  --pink-50:   #fff0f5;
+  --pink-100:  #ffe0ec;
+  --pink-200:  #ffc2d4;
+  --pink-300:  #ff9dba;
+  --pink-400:  #ff6b9d;
+  --pink-500:  #e8547a;
+  --pink-600:  #c73d63;
+
+  /* Neutrals */
+  --white:     #ffffff;
+  --off-white: #fdf6f9;
+  --gray-100:  #f5e9ef;
+  --gray-300:  #c8a8b8;
+  --gray-500:  #8e6e7e;
+  --gray-700:  #4a2e3a;
+  --text:      #3a1f2b;
+
+  /* Semantic */
+  --bg:        #fdf6f9;
+  --card-bg:   #ffffff;
+  --nav-bg:    rgba(255,255,255,.88);
+  --border:    #ffe0ec;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 12px rgba(232,84,122,.10);
+  --shadow-md: 0 6px 30px rgba(232,84,122,.15);
+  --shadow-lg: 0 16px 50px rgba(232,84,122,.20);
+
+  /* Layout */
+  --radius:    18px;
+  --radius-sm: 10px;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* Motion */
+  --transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── DARK MODE ── */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --pink-50:   #2a0d18;
+  --pink-100:  #3d1525;
+  --pink-200:  #5a2038;
+  --pink-300:  #c4607e;
+  --pink-400:  #e8547a;
+  --pink-500:  #ff7096;
+  --pink-600:  #ffaac4;
+
+  --white:     #1e0f17;
+  --off-white: #160b12;
+  --gray-100:  #2e1520;
+  --gray-300:  #7a5060;
+  --gray-500:  #b08090;
+  --gray-700:  #e8c8d4;
+  --text:      #f5e0e8;
+
+  --bg:        #160b12;
+  --card-bg:   #1e0f17;
+  --nav-bg:    rgba(22,11,18,.92);
+  --border:    #3d1525;
+
+  --shadow-sm: 0 2px 12px rgba(0,0,0,.4);
+  --shadow-md: 0 6px 30px rgba(0,0,0,.5);
+  --shadow-lg: 0 16px 50px rgba(0,0,0,.6);
+}
+
+/* Browser/OS dark mode is ignored — theme is controlled by our toggle button */

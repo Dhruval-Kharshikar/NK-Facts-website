@@ -1,0 +1,21 @@
+<a href="{% if user.is_authenticated %}{% url 'podcast_detail' p.pk %}{% else %}{% url 'login' %}{% endif %}" class="podcast-card">
+  <div class="card-thumb">
+    {% if p.get_thumbnail %}
+      <img src="{{ p.get_thumbnail }}" alt="{{ p.title }}"/>
+    {% else %}
+      {{ p.get_icon }}
+    {% endif %}
+    {% if p.category %}
+    <span class="card-cat-badge">{{ p.category.icon }} {{ p.category.name }}</span>
+    {% endif %}
+  </div>
+  <div class="card-body">
+    <p class="card-ep">Episode {{ p.episode_number }}</p>
+    <h3 class="card-title">{{ p.title }}</h3>
+    <p class="card-desc">{{ p.description }}</p>
+    <div class="card-footer">
+      <span class="card-dur">🕐 {{ p.duration|default:"Coming soon" }}</span>
+      <div class="card-play">▶</div>
+    </div>
+  </div>
+</a>

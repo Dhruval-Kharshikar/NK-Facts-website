@@ -1,0 +1,98 @@
+{% extends 'podcasts/base.html' %}
+{% load static %}
+{% block title %}About – NK Facts{% endblock %}
+
+{% block content %}
+
+<section class="about-hero">
+  <div class="hero-badge">🌸 &nbsp; Our Story</div>
+  <h1 style="font-family:var(--font-display); font-size:clamp(2.2rem,5vw,3.5rem); margin-bottom:1rem;">About <em style="color:var(--pink-500);">NK Facts</em></h1>
+  <p style="max-width:540px; margin:0 auto; color:var(--gray-500); font-size:1.05rem;">A podcast born from curiosity, crafted with love — exploring the beautiful, strange, and fascinating facts about our world.</p>
+</section>
+
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap detail-thumb">
+        <img src="{% static 'images/Gemini_Generated_Image_moy2ugmoy2ugmoy2(1).png' %}" alt="NK Facts Host">
+      </div>
+      <div class="about-text">
+        <span class="section-label">Who We Are</span>
+        <h2>Storytelling meets <em style="color:var(--pink-500);">curiosity</em></h2>
+        <p>NK Facts was created with one simple mission: to make learning about the world around us as delightful as possible. We believe that facts don't have to be dry — they can be magical, surprising, and deeply moving.</p>
+        <p>Every episode is researched with care, narrated with warmth, and designed to leave you with that wonderful feeling of knowing something new about the universe you live in.</p>
+        <p>Whether you're taking a walk, cooking dinner, or winding down for the night — NK Facts is your perfect companion.</p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+          <a href="{% url 'categories' %}" class="btn btn-primary">🎧 &nbsp; Listen Now</a>
+          <a href="{% url 'reviews' %}" class="btn btn-outline">⭐ &nbsp; Leave a Review</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">What We Stand For</span>
+      <h2 class="section-title">Our <em>Values</em></h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🔍</div>
+        <h3>Curiosity</h3>
+        <p>We believe every corner of existence holds something worth knowing. We chase the question "why?"</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💕</div>
+        <h3>Warmth</h3>
+        <p>Facts are better shared with heart. We approach every topic with empathy and genuine care.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">✅</div>
+        <h3>Accuracy</h3>
+        <p>Every fact we share is thoroughly researched and verified. Truth matters deeply to us.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌍</div>
+        <h3>Diversity</h3>
+        <p>We cover topics that span all of nature and human experience.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🎨</div>
+        <h3>Creativity</h3>
+        <p>Storytelling is an art. We craft each episode to be immersive, vivid, and memorable.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Community</h3>
+        <p>Our listeners are at the heart of everything. Your curiosity inspires every episode we make.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES — dynamic from database -->
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Our Topics</span>
+      <h2 class="section-title">What We <em>Cover</em></h2>
+      <p class="section-sub">NK Facts explores rich categories of knowledge — each a world of its own.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; text-align:center;">
+      {% for cat in categories %}
+      <a href="{% url 'categories' %}?cat={{ cat.slug }}" style="text-decoration:none; color:inherit;">
+        <div style="background:var(--pink-50); border:1px solid var(--pink-100); border-radius:var(--radius); padding:1.5rem .5rem; transition:var(--transition);" onmouseover="this.style.background='var(--pink-100)'" onmouseout="this.style.background='var(--pink-50)'">
+          <div style="font-size:2rem;">{{ cat.icon }}</div>
+          <p style="font-weight:600; margin-top:.5rem; font-size:.95rem;">{{ cat.name }}</p>
+        </div>
+      </a>
+      {% empty %}
+      <p style="color:var(--gray-400); grid-column:1/-1; text-align:center;">Categories coming soon!</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

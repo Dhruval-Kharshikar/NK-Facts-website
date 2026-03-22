@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script>
+    // Apply saved theme INSTANTLY before page renders — prevents any flash
+    (function() {
+      var t = localStorage.getItem('nkfacts-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <title>{% block title %}NK Facts – Discover the World Through Sound{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/variables.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/components.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/animations.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}"/>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="{% url 'home' %}" class="navbar-brand">
+    <div class="navbar-logo" style="padding:0; overflow:hidden;">
+      <img src="https://s3-us-west-2.amazonaws.com/anchor-generated-image-bank/production/podcast_uploaded400/12881165/12881165-1615969851822-c84e3f1dc2b4c.jpg"
+           alt="NK Facts" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/>
+    </div>
+    <span class="navbar-title">NK <em>Facts</em></span>
+  </a>
+
+  <!-- SEARCH BAR -->
+  <form method="get" action="{% url 'search' %}" class="navbar-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" name="q" placeholder="Search episodes..." value="{{ request.GET.q|default:'' }}" class="search-input"/>
+  </form>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'categories' %}">Categories</a></li>
+    <li><a href="{% url 'search' %}">Search</a></li>
+    <li><a href="{% url 'reviews' %}">Reviews</a></li>
+    <li><a href="{% url 'spotify' %}">Spotify</a></li>
+    {% if user.is_authenticated %}
+      {% if user.is_superuser or user.is_staff %}
+        <li><a href="/admin/" style="color:var(--pink-500); font-weight:600;">⚙️ Admin</a></li>
+      {% endif %}
+      <li><a href="#">Hi, {{ user.first_name|default:user.username }} 💕</a></li>
+      <li><a href="{% url 'logout' %}" class="btn-nav">Logout</a></li>
+    {% else %}
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'signup' %}" class="btn-nav">Sign Up</a></li>
+    {% endif %}
+  </ul>
+
+  <!-- DARK/LIGHT MODE TOGGLE -->
+  <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode" aria-label="Toggle theme">
+    <span class="theme-icon-light">☀️</span>
+    <span class="theme-icon-dark">🌙</span>
+  </button>
+
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MESSAGES -->
+{% if messages %}
+<div class="messages-box">
+  {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}">
+      {% if message.tags == 'success' %}🌸{% elif message.tags == 'error' %}⚠️{% else %}💕{% endif %}
+      {{ message }}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="{% url 'home' %}" class="navbar-brand" style="text-decoration:none;">
+          <div class="navbar-logo" style="padding:0; overflow:hidden;">
+            <img src="https://s3-us-west-2.amazonaws.com/anchor-generated-image-bank/production/podcast_uploaded400/12881165/12881165-1615969851822-c84e3f1dc2b4c.jpg"
+                 alt="NK Facts" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/>
+          </div>
+          <span class="navbar-title">NK <em>Facts</em></span>
+        </a>
+        <p>Exploring the world's wonders through the art of storytelling and sound. A podcast for the curious mind.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'about' %}">About Us</a></li>
+          <li><a href="{% url 'categories' %}">All Categories</a></li>
+          <li><a href="{% url 'search' %}">Search</a></li>
+          <li><a href="{% url 'reviews' %}">Reviews</a></li>
+    <li><a href="{% url 'reviews' %}">Reviews</a></li>
+          <li><a href="{% url 'spotify' %}">Spotify</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="{% url 'categories' %}?cat=nature">🌿 Nature</a></li>
+          <li><a href="{% url 'categories' %}?cat=science">🔬 Science</a></li>
+          <li><a href="{% url 'categories' %}?cat=history">📜 History</a></li>
+          <li><a href="{% url 'categories' %}?cat=space">🌌 Space</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 NK Facts. Made with 💕 &nbsp;|&nbsp; <a href="{% url 'about' %}">About</a> &nbsp;|&nbsp; <a href="{% url 'spotify' %}">Spotify</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

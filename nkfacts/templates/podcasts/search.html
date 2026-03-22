@@ -1,0 +1,113 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Search – NK Facts{% endblock %}
+
+{% block content %}
+
+<section style="padding:3rem 2rem 2rem; background:linear-gradient(160deg,var(--white),var(--pink-50)); text-align:center;">
+  <span class="section-label">🔍 Search</span>
+  <h1 style="font-family:var(--font-display); font-size:clamp(1.8rem,4vw,2.8rem); margin-bottom:1.5rem;">
+    Find Your <em style="color:var(--pink-500);">Episode</em>
+  </h1>
+
+  <!-- SEARCH FORM -->
+  <form method="get" action="{% url 'search' %}" style="max-width:620px; margin:0 auto;">
+    <div style="display:flex; gap:.6rem; flex-wrap:wrap; justify-content:center; margin-bottom:1rem;">
+      <div style="flex:1; min-width:220px; position:relative;">
+        <span style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); font-size:1.1rem; pointer-events:none;">🔍</span>
+        <input
+          type="text" name="q" value="{{ query }}"
+          placeholder="Search episodes by name..."
+          class="form-input"
+          style="padding-left:2.8rem; border-radius:99px; font-size:1rem;"
+          autofocus
+        />
+      </div>
+      <select name="cat" class="form-input" style="width:auto; border-radius:99px; padding:.75rem 1.2rem; font-size:.95rem;">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.slug }}" {% if cat_filter == cat.slug %}selected{% endif %}>
+          {{ cat.icon }} {{ cat.name }}
+        </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary" style="border-radius:99px; padding:.75rem 2rem;">Search</button>
+    </div>
+
+    <!-- Search tips -->
+    <p style="font-size:.8rem; color:var(--gray-300);">
+      💡 Tip: Search finds full words — "cat" finds "cats" but not "communicate"
+    </p>
+  </form>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    {% if count is not None %}
+      <!-- RESULTS HEADER -->
+      <div style="margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+        <div>
+          {% if query and cat_filter %}
+            <h2 style="font-family:var(--font-display); font-size:1.4rem;">
+              Results for <em style="color:var(--pink-500);">"{{ query }}"</em>
+              in {% for cat in categories %}{% if cat.slug == cat_filter %}{{ cat.icon }} {{ cat.name }}{% endif %}{% endfor %}
+            </h2>
+          {% elif query %}
+            <h2 style="font-family:var(--font-display); font-size:1.4rem;">
+              Results for <em style="color:var(--pink-500);">"{{ query }}"</em>
+            </h2>
+          {% elif cat_filter %}
+            <h2 style="font-family:var(--font-display); font-size:1.4rem;">
+              Browsing {% for cat in categories %}{% if cat.slug == cat_filter %}{{ cat.icon }} <em style="color:var(--pink-500);">{{ cat.name }}</em>{% endif %}{% endfor %}
+            </h2>
+          {% endif %}
+          <p style="color:var(--gray-500); font-size:.9rem; margin-top:.3rem;">
+            {{ count }} episode{{ count|pluralize }} found
+            {% if query %} — sorted by relevance{% endif %}
+          </p>
+        </div>
+        {% if query or cat_filter %}
+        <a href="{% url 'search' %}" style="font-size:.88rem; color:var(--pink-500); text-decoration:none; font-weight:600;">✕ Clear search</a>
+        {% endif %}
+      </div>
+
+      <!-- CATEGORY QUICK FILTERS -->
+      <div class="cat-chips" style="margin-bottom:2rem;">
+        <a href="{% url 'search' %}{% if query %}?q={{ query }}{% endif %}" class="cat-chip {% if not cat_filter %}active{% endif %}">🎙️ All</a>
+        {% for cat in categories %}
+        <a href="{% url 'search' %}?{% if query %}q={{ query }}&{% endif %}cat={{ cat.slug }}"
+           class="cat-chip {% if cat_filter == cat.slug %}active{% endif %}">
+          {{ cat.icon }} {{ cat.name }}
+        </a>
+        {% endfor %}
+      </div>
+
+      {% if results %}
+        <div class="podcast-grid">
+          {% for p in results %}{% include 'podcasts/_podcast_card.html' with p=p %}{% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <span class="emoji">🔍</span>
+          <h3>No episodes found for "{{ query }}"</h3>
+          <p>Try a different keyword, or browse all episodes below.</p>
+          <a href="{% url 'categories' %}" class="btn btn-primary" style="margin-top:1.2rem;">Browse All Episodes</a>
+        </div>
+      {% endif %}
+
+    {% else %}
+      <!-- INITIAL STATE -->
+      <div style="text-align:center; padding:2rem 0;">
+        <p style="color:var(--gray-500); margin-bottom:2rem; font-size:1rem;">Or browse by category:</p>
+        <div class="cat-chips" style="justify-content:center;">
+          {% for cat in categories %}
+          <a href="{% url 'search' %}?cat={{ cat.slug }}" class="cat-chip">{{ cat.icon }} {{ cat.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

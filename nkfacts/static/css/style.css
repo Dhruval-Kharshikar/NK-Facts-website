@@ -1,0 +1,21 @@
+/* ═══════════════════════════════════════════════════════
+   style.css — NK Facts Master CSS
+   ═══════════════════════════════════════════════════════
+   Import order matters — do not rearrange.
+
+   variables.css  → CSS custom properties (colors, fonts, shadows)
+   base.css       → Reset, body, typography, shared utilities
+   navbar.css     → Top nav, search bar, hamburger, theme toggle
+   components.css → Buttons, cards, chips, category sections, footer
+   pages.css      → Hero, auth, about, spotify, detail page
+   animations.css → Keyframes (fadeUp, float, gridFadeIn)
+   responsive.css → Media queries for mobile/tablet
+   ═══════════════════════════════════════════════════════ */
+
+/* @import url('variables.css');
+@import url('base.css');
+@import url('navbar.css');
+@import url('components.css');
+@import url('pages.css');
+@import url('animations.css');
+@import url('responsive.css'); */

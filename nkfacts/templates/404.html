@@ -1,0 +1,20 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Page Not Found – NK Facts{% endblock %}
+
+{% block content %}
+<section style="min-height:70vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:4rem 2rem; background:linear-gradient(160deg,var(--white),var(--pink-50));">
+  <div>
+    <div style="font-size:5rem; margin-bottom:1rem;">🎙️</div>
+    <h1 style="font-family:var(--font-display); font-size:5rem; color:var(--pink-300); margin-bottom:.5rem; line-height:1;">404</h1>
+    <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-bottom:1rem;">Oops! Page Not Found</h2>
+    <p style="color:var(--gray-500); max-width:420px; margin:0 auto 2rem; font-size:1rem;">
+      Looks like this episode went missing! Let's get you back to something good.
+    </p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <a href="{% url 'home' %}" class="btn btn-primary">🏠 &nbsp; Go Home</a>
+      <a href="{% url 'categories' %}" class="btn btn-outline">🎧 &nbsp; Browse Episodes</a>
+      <a href="{% url 'search' %}" class="btn btn-outline">🔍 &nbsp; Search</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

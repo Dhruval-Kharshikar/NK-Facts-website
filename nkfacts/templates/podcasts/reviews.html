@@ -1,0 +1,159 @@
+{% extends 'podcasts/base.html' %}
+{% block title %}Reviews – NK Facts{% endblock %}
+
+{% block extra_css %}
+<style>
+.star-rating { display: flex; gap: .3rem; flex-direction: row-reverse; justify-content: flex-end; }
+.star-rating input { display: none; }
+.star-rating label {
+  font-size: 2rem; cursor: pointer; color: var(--gray-100);
+  transition: color .15s ease, transform .15s ease;
+}
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+  color: #f5a623;
+  transform: scale(1.15);
+}
+.star-rating input:checked + label { color: #f5a623; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section style="padding:3.5rem 2rem 2rem; background:linear-gradient(160deg,var(--white),var(--pink-50)); text-align:center;">
+  <span class="section-label">💌 Share Your Thoughts</span>
+  <h1 style="font-family:var(--font-display); font-size:clamp(2rem,5vw,3rem); margin-bottom:.8rem;">
+    Rate an <em style="color:var(--pink-500);">Episode</em>
+  </h1>
+  <p style="color:var(--gray-500); max-width:500px; margin:0 auto;">
+    Loved an episode? We'd love to hear from you! Your review goes directly to our inbox. 🌸
+  </p>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:750px;">
+
+    {% if submitted %}
+    <!-- SUCCESS STATE -->
+    <div style="text-align:center; padding:4rem 2rem; background:var(--white); border-radius:var(--radius); border:1.5px solid var(--pink-100); box-shadow:var(--shadow-md);">
+      <div style="font-size:4rem; margin-bottom:1rem;">💌</div>
+      <h2 style="font-family:var(--font-display); font-size:2rem; margin-bottom:.8rem; color:var(--pink-600);">
+        Thank You!
+      </h2>
+      <p style="color:var(--gray-500); margin-bottom:.5rem; font-size:1.05rem;">
+        Your review for <strong>{{ selected_podcast.title }}</strong> has been sent to us.
+      </p>
+      <p style="color:var(--gray-400); font-size:.9rem; margin-bottom:2rem;">
+        We personally read every single review. It means the world to us! 🌸
+      </p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{% url 'reviews' %}" class="btn btn-primary">Write Another Review</a>
+        <a href="{% url 'categories' %}" class="btn btn-outline">Browse Episodes</a>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- REVIEW FORM -->
+    <div style="background:var(--white); border-radius:var(--radius); padding:2.5rem; box-shadow:var(--shadow-md); border:1.5px solid var(--pink-100);">
+
+      <h2 style="font-family:var(--font-display); font-size:1.6rem; margin-bottom:.4rem;">Write a Review</h2>
+      <p style="color:var(--gray-500); font-size:.9rem; margin-bottom:2rem;">Your review is sent privately to our inbox — it won't be shown publicly.</p>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- EPISODE SELECTOR -->
+        <div class="form-group">
+          <label class="form-label">Select Episode *</label>
+          <select id="episodeSelect" class="form-input" style="cursor:pointer;">
+            <option value="">— Choose an episode —</option>
+            {% for p in podcasts %}
+            <option value="{{ p.pk }}"
+              {% if selected_podcast and selected_podcast.pk == p.pk %}selected{% endif %}>
+              {{ p.get_icon }} Ep {{ p.episode_number }} — {{ p.title }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        {% if selected_podcast %}
+        <!-- SELECTED EPISODE PREVIEW -->
+        <div style="background:var(--pink-50); border:1px solid var(--pink-100); border-radius:var(--radius-sm); padding:1rem 1.2rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem;">
+          <span style="font-size:2rem;">{{ selected_podcast.get_icon }}</span>
+          <div>
+            <p style="font-weight:600; font-size:.95rem;">{{ selected_podcast.title }}</p>
+            <p style="font-size:.82rem; color:var(--gray-500);">Episode {{ selected_podcast.episode_number }} · {{ selected_podcast.category.name }}</p>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- STAR RATING -->
+        <div class="form-group">
+          <label class="form-label">Your Rating *</label>
+          <div class="star-rating">
+            {% for i in rating_range_reversed %}
+            <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required/>
+            <label for="star{{ i }}" title="{{ i }} star{{ i|pluralize }}">★</label>
+            {% endfor %}
+          </div>
+          <p style="font-size:.8rem; color:var(--gray-300); margin-top:.4rem;">Click a star to rate</p>
+        </div>
+
+        <!-- NAME & EMAIL -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="name">Your Name *</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="e.g. Alex Johnson" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Your Email <span style="color:var(--gray-300); font-weight:400;">(optional)</span></label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="so we can reply 🌸"/>
+          </div>
+        </div>
+
+        <!-- MESSAGE -->
+        <div class="form-group">
+          <label class="form-label" for="message">Your Review *</label>
+          <textarea
+            class="form-input" id="message" name="message"
+            rows="5" required
+            placeholder="Tell us what you thought about this episode..."
+            style="resize:vertical; border-radius:14px;"
+          ></textarea>
+        </div>
+
+        <!-- HIDDEN PODCAST ID (set by JS when episode is pre-selected) -->
+        {% if selected_podcast %}
+        <input type="hidden" name="podcast_id" value="{{ selected_podcast.pk }}"/>
+        {% endif %}
+
+        <!-- SUBMIT -->
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem; font-size:1rem; padding:.9rem;">
+          💌 &nbsp; Send Review to NK Facts
+        </button>
+
+        <p style="text-align:center; font-size:.8rem; color:var(--gray-300); margin-top:1rem;">
+          Your review is sent directly and privately to our inbox. 🔒
+        </p>
+      </form>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const sel = document.getElementById('episodeSelect');
+if (sel) {
+  sel.addEventListener('change', function() {
+    if (this.value) {
+      window.location.href = '{% url "reviews" %}?episode=' + this.value;
+    }
+  });
+}
+</script>
+{% endblock %}

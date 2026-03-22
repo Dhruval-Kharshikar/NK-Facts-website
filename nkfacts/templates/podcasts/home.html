@@ -1,0 +1,107 @@
+{% extends 'podcasts/base.html' %}
+{% load static %}
+{% block title %}NK Facts – Discover the World Through Sound{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob blob-1"></div>
+  <div class="hero-blob blob-2"></div>
+  <div class="hero-badge">🎙️ &nbsp; New Episodes Every Week</div>
+  <h1>Discover the World<br/>Through <em>Sound & Story</em></h1>
+  <p>NK Facts brings you curious, wonder-filled podcasts about nature, science, history, space, and everything in between.</p>
+  <div class="hero-btns">
+    {% if user.is_authenticated %}
+      <a href="{% url 'categories' %}" class="btn btn-primary">🎧 &nbsp; Browse Episodes</a>
+    {% else %}
+      <a href="{% url 'signup' %}" class="btn btn-primary">🌸 &nbsp; Join for Free</a>
+      <a href="{% url 'login' %}" class="btn btn-outline">Sign In</a>
+    {% endif %}
+    <a href="{% url 'spotify' %}" class="btn btn-outline">🎵 &nbsp; Listen on Spotify</a>
+  </div>
+</section>
+
+<!-- CATEGORIES QUICK ACCESS — fully dynamic from database -->
+<section class="section" style="background: var(--white);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Explore by Topic</span>
+      <h2 class="section-title">Browse Our <em>Categories</em></h2>
+      <p class="section-sub">Something for every curious mind — pick a topic and dive in.</p>
+    </div>
+
+    <!-- Category chips — pulled from your database -->
+    <div class="cat-chips">
+      {% for cat in categories %}
+      <a href="{% url 'categories' %}?cat={{ cat.slug }}" class="cat-chip">
+        <span class="emoji">{{ cat.icon }}</span> {{ cat.name }}
+      </a>
+      {% empty %}
+      <p style="color:var(--gray-400); text-align:center; width:100%;">No categories yet — add them in Admin → Categories.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Episode count pills per category — dynamic -->
+    <div class="stats-row" style="margin-top:1rem;">
+      {% for cat, count in categories_with_counts %}
+      <div class="stat-pill">
+        <strong>{{ count }}</strong>
+        <span>{{ cat.icon }} {{ cat.name }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED EPISODES -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Hot Releases</span>
+      <h2 class="section-title">Featured <em>Episodes</em></h2>
+    </div>
+
+    {% if featured %}
+      {% if not user.is_authenticated %}
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div style="background:var(--pink-50); border:1.5px solid var(--pink-200); border-radius:var(--radius); padding:1.2rem 2rem; display:inline-block;">
+          🔒 &nbsp; <strong>Sign in</strong> to listen to full episodes &nbsp;
+          <a href="{% url 'login' %}" class="btn btn-primary" style="margin-left:.5rem; padding:.4rem 1.2rem; font-size:.88rem;">Login</a>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="podcast-grid">
+        {% for p in featured %}
+        {% include 'podcasts/_podcast_card.html' with p=p %}
+        {% endfor %}
+      </div>
+      <div style="text-align:center; margin-top:2.5rem;">
+        <a href="{% url 'categories' %}" class="btn btn-outline">View All Episodes →</a>
+      </div>
+
+    {% else %}
+      <div class="empty-state">
+        <span class="emoji">🎙️</span>
+        <h3>Episodes Coming Soon!</h3>
+        <p>We're recording amazing content. Check back soon or follow us on Spotify.</p>
+        <a href="{% url 'spotify' %}" class="btn btn-primary" style="margin-top:1.2rem;">Follow on Spotify</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+{% if not user.is_authenticated %}
+<section style="background:linear-gradient(135deg,var(--pink-400),var(--pink-600)); padding:4rem 2rem; text-align:center; color:#fff;">
+  <h2 style="font-family:var(--font-display); font-size:clamp(1.6rem,4vw,2.5rem); margin-bottom:1rem;">Join the NK Facts Community 🌸</h2>
+  <p style="opacity:.9; max-width:480px; margin:0 auto 2rem; font-size:1.05rem;">Sign up for free and unlock access to all our podcast episodes, categories, and exclusive content.</p>
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <a href="{% url 'signup' %}" style="background:#fff; color:var(--pink-600); padding:.75rem 2rem; border-radius:99px; font-weight:700; text-decoration:none;">Create Free Account</a>
+    <a href="{% url 'about' %}" style="border:2px solid rgba(255,255,255,.6); color:#fff; padding:.75rem 2rem; border-radius:99px; font-weight:600; text-decoration:none;">Learn More</a>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
