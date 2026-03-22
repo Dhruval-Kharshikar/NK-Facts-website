@@ -12,7 +12,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
     path('logout/', views.logout_view, name='logout'),
-    # TEMPORARY setup URL — delete after creating superuser
-    path('setup-nkfacts-admin-2026/', views.create_superuser_view, name='create_superuser'),
+    # # TEMPORARY setup URL — delete after creating superuser
+    # path('setup-nkfacts-admin-2026/', views.create_superuser_view, name='create_superuser'),
 
 ]
