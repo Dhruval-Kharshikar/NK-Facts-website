@@ -4,7 +4,10 @@
 {% block content %}
 <div class="auth-page">
   <div class="auth-card" style="max-width:520px;">
-    <div class="auth-logo">NK</div>
+    <div class="auth-logo">
+      <img src="https://s3-us-west-2.amazonaws.com/anchor-generated-image-bank/production/podcast_uploaded400/12881165/12881165-1615969851822-c84e3f1dc2b4c.jpg"
+           alt="NK Facts" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/>
+    </div>
     <h1 class="auth-title">Join NK Facts 🌸</h1>
     <p class="auth-sub">Create your free account and start exploring</p>
 
@@ -30,11 +33,29 @@
       </div>
       <div class="form-group">
         <label class="form-label" for="password1">Password</label>
-        <input class="form-input" type="password" id="password1" name="password1" placeholder="Create a password" required autocomplete="new-password"/>
+        <div style="position:relative;">
+          <input class="form-input" type="password" id="password1" name="password1"
+                 placeholder="Create a password" required autocomplete="new-password"
+                 style="padding-right:3rem;"/>
+          <button type="button" onclick="togglePassword('password1','eye1')"
+                  style="position:absolute;right:.8rem;top:50%;transform:translateY(-50%);
+                         background:none;border:none;cursor:pointer;font-size:1.1rem;padding:0;">
+            <span id="eye1">👁️</span>
+          </button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label" for="password2">Confirm Password</label>
-        <input class="form-input" type="password" id="password2" name="password2" placeholder="Repeat your password" required autocomplete="new-password"/>
+        <div style="position:relative;">
+          <input class="form-input" type="password" id="password2" name="password2"
+                 placeholder="Repeat your password" required autocomplete="new-password"
+                 style="padding-right:3rem;"/>
+          <button type="button" onclick="togglePassword('password2','eye2')"
+                  style="position:absolute;right:.8rem;top:50%;transform:translateY(-50%);
+                         background:none;border:none;cursor:pointer;font-size:1.1rem;padding:0;">
+            <span id="eye2">👁️</span>
+          </button>
+        </div>
       </div>
       <button type="submit" class="btn btn-primary btn-full">Create Account 💕</button>
     </form>
@@ -47,4 +68,20 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon  = document.getElementById(iconId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    icon.textContent = '👁️';
+  }
+}
+</script>
 {% endblock %}
