@@ -106,7 +106,7 @@ EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = config('EMAIL_HOST_USER',     default='nkfacts.podcast@gmail.com')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='smoy azeg gqnv wjwo')
-DEFAULT_FROM_EMAIL  = f'NK Facts <{EMAIL_HOST_USER}>'
+DEFAULT_FROM_EMAIL  = 'NK Facts <nkfacts.podcast@gmail.com>'
 REVIEW_RECIPIENT    = config('REVIEW_RECIPIENT',    default='nkfacts.podcast@gmail.com')
 
 # ── CUSTOM ERROR PAGES ────────────────────────────────────
@@ -122,5 +122,3 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS   = True
     SESSION_COOKIE_SECURE            = True
     CSRF_COOKIE_SECURE               = True
-DEFAULT_FROM_EMAIL  = 'NK Facts <nkfacts.podcast@gmail.com>'
-REVIEW_RECIPIENT    = 'nkfacts.podcast@gmail.com'
