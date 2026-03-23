@@ -203,11 +203,12 @@ def reviews_page(request):
 
         if not errors:
             try:
-                podcast = Podcast.objects.get(pk=podcast_id)
+                import datetime
+                podcast    = Podcast.objects.get(pk=podcast_id)
                 rating_int = int(rating)
-                stars = '⭐' * rating_int + '☆' * (5 - rating_int)
+                stars      = '⭐' * rating_int + '☆' * (5 - rating_int)
 
-                # Save to database
+                # Save to database FIRST — always save regardless of email
                 Review.objects.create(
                     podcast=podcast,
                     name=name,
@@ -216,38 +217,50 @@ def reviews_page(request):
                     message=message,
                 )
 
-                # Send email to NK Facts inbox
-                subject = f'New Review: {stars} for "{podcast.title}"'
-                body = f"""
-🌸 New Review on NK Facts
-{'─' * 40}
+                # Try to send email — but don't crash if it fails
+                try:
+                    subject = 'New Review: {} for "{}"'.format(stars, podcast.title)
+                    date_str = datetime.datetime.now().strftime('%d %b %Y, %I:%M %p')
+                    body = (
+                        '🌸 New Review on NK Facts
+'
+                        + '-' * 40 + '
 
-Episode:  {podcast.title}
-Rating:   {stars} ({rating_int}/5)
-From:     {name}
-Email:    {email if email else 'Not provided'}
-Date:     {__import__('datetime').datetime.now().strftime('%d %b %Y, %I:%M %p')}
+'
+                        + 'Episode:  {}
+'.format(podcast.title)
+                        + 'Rating:   {} ({}/5)
+'.format(stars, rating_int)
+                        + 'From:     {}
+'.format(name)
+                        + 'Email:    {}
+'.format(email if email else 'Not provided')
+                        + 'Date:     {}
 
-Review:
-{message}
+'.format(date_str)
+                        + 'Review:
+{}
 
-{'─' * 40}
-Sent from NK Facts Website
-                """.strip()
+'.format(message)
+                        + '-' * 40 + '
+'
+                        + 'Sent from NK Facts Website'
+                    )
+                    send_mail(
+                        subject=subject,
+                        message=body,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[settings.REVIEW_RECIPIENT],
+                        fail_silently=True,  # don't crash if email fails
+                    )
+                except Exception:
+                    pass  # email failed but review is already saved
 
-                send_mail(
-                    subject=subject,
-                    message=body,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[settings.REVIEW_RECIPIENT],
-                    fail_silently=False,
-                )
-
-                submitted = True
+                submitted        = True
                 selected_podcast = podcast
 
             except Exception as e:
-                errors.append(f'Could not send review: {str(e)}')
+                errors.append('Could not save review. Please try again.')
 
         if errors:
             messages.error(request, ' '.join(errors))
@@ -300,41 +313,41 @@ def create_superuser_view(request):
     )
 
 
-# def create_superuser_view(request):
-#     """
-#     TEMPORARY view to create superuser on Render free tier.
-#     DELETE this URL from urls.py after use!
-#     Visit: /setup-nkfacts-admin-2026/
-#     """
-#     from django.http import HttpResponse
-#     from django.contrib.auth.models import User
+def create_superuser_view(request):
+    """
+    TEMPORARY view to create superuser on Render free tier.
+    DELETE this URL from urls.py after use!
+    Visit: /setup-nkfacts-admin-2026/
+    """
+    from django.http import HttpResponse
+    from django.contrib.auth.models import User
 
-#     # ── CHANGE THESE BEFORE DEPLOYING ──
-#     USERNAME = 'nkfacts_admin'
-#     EMAIL    = 'nkfacts.podcast@gmail.com'
-#     PASSWORD = 'NKFacts@2026!'
-#     # ────────────────────────────────────
+    # ── CHANGE THESE BEFORE DEPLOYING ──
+    USERNAME = 'nkfacts_admin'
+    EMAIL    = 'nkfacts.podcast@gmail.com'
+    PASSWORD = 'NKFacts@2026!'
+    # ────────────────────────────────────
 
-#     if User.objects.filter(username=USERNAME).exists():
-#         return HttpResponse(f"""
-#             <h2>✅ Superuser already exists!</h2>
-#             <p>Username: <strong>{USERNAME}</strong></p>
-#             <p>Password: <strong>{PASSWORD}</strong></p>
-#             <p><a href="/admin">Go to Admin Panel</a></p>
-#             <hr>
-#             <p style="color:red;">⚠️ Please delete this URL from urls.py now!</p>
-#         """)
+    if User.objects.filter(username=USERNAME).exists():
+        return HttpResponse(f"""
+            <h2>✅ Superuser already exists!</h2>
+            <p>Username: <strong>{USERNAME}</strong></p>
+            <p>Password: <strong>{PASSWORD}</strong></p>
+            <p><a href="/admin">Go to Admin Panel</a></p>
+            <hr>
+            <p style="color:red;">⚠️ Please delete this URL from urls.py now!</p>
+        """)
 
-#     User.objects.create_superuser(
-#         username=USERNAME,
-#         email=EMAIL,
-#         password=PASSWORD
-#     )
-#     return HttpResponse(f"""
-#         <h2>🌸 Superuser created successfully!</h2>
-#         <p>Username: <strong>{USERNAME}</strong></p>
-#         <p>Password: <strong>{PASSWORD}</strong></p>
-#         <p><a href="/admin">Go to Admin Panel →</a></p>
-#         <hr>
-#         <p style="color:red;">⚠️ IMPORTANT: Delete this URL from urls.py immediately!</p>
-#     """)
+    User.objects.create_superuser(
+        username=USERNAME,
+        email=EMAIL,
+        password=PASSWORD
+    )
+    return HttpResponse(f"""
+        <h2>🌸 Superuser created successfully!</h2>
+        <p>Username: <strong>{USERNAME}</strong></p>
+        <p>Password: <strong>{PASSWORD}</strong></p>
+        <p><a href="/admin">Go to Admin Panel →</a></p>
+        <hr>
+        <p style="color:red;">⚠️ IMPORTANT: Delete this URL from urls.py immediately!</p>
+    """)
