@@ -104,7 +104,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="name">Your Name *</label>
-            <input class="form-input" type="text" id="name" name="name" placeholder="e.g. Alex Johnson" required/>
+            <input class="form-input" type="text" id="name" name="name" placeholder="e.g. Priya" required/>
           </div>
           <div class="form-group">
             <label class="form-label" for="email">Your Email <span style="color:var(--gray-300); font-weight:400;">(optional)</span></label>
@@ -123,10 +123,8 @@
           ></textarea>
         </div>
 
-        <!-- HIDDEN PODCAST ID (set by JS when episode is pre-selected) -->
-        {% if selected_podcast %}
-        <input type="hidden" name="podcast_id" value="{{ selected_podcast.pk }}"/>
-        {% endif %}
+        <!-- HIDDEN PODCAST ID — always present -->
+        <input type="hidden" name="podcast_id" id="hiddenPodcastId" value="{% if selected_podcast %}{{ selected_podcast.pk }}{% endif %}"/>
 
         <!-- SUBMIT -->
         <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem; font-size:1rem; padding:.9rem;">
