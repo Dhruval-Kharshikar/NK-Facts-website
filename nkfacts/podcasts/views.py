@@ -219,39 +219,30 @@ def reviews_page(request):
 
                 # Try to send email — but don't crash if it fails
                 try:
-                    subject = 'New Review: {} for "{}"'.format(stars, podcast.title)
+                    subject = 'New Review: {}/5 for {}'.format(rating_int, podcast.title)
                     date_str = datetime.datetime.now().strftime('%d %b %Y, %I:%M %p')
-                    body = (
-                        '🌸 New Review on NK Facts
-'
-                        + '-' * 40 + '
-
-'
-                        + 'Episode:  {}
-'.format(podcast.title)
-                        + 'Rating:   {} ({}/5)
-'.format(stars, rating_int)
-                        + 'From:     {}
-'.format(name)
-                        + 'Email:    {}
-'.format(email if email else 'Not provided')
-                        + 'Date:     {}
-
-'.format(date_str)
-                        + 'Review:
-{}
-
-'.format(message)
-                        + '-' * 40 + '
-'
-                        + 'Sent from NK Facts Website'
-                    )
+                    lines = [
+                        'New Review on NK Facts',
+                        '-' * 40,
+                        'Episode: {}'.format(podcast.title),
+                        'Rating:  {}/5'.format(rating_int),
+                        'From:    {}'.format(name),
+                        'Email:   {}'.format(email if email else 'Not provided'),
+                        'Date:    {}'.format(date_str),
+                        '',
+                        'Review:',
+                        message,
+                        '',
+                        '-' * 40,
+                        'Sent from NK Facts Website',
+                    ]
+                    body = '\n'.join(lines)
                     send_mail(
                         subject=subject,
                         message=body,
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[settings.REVIEW_RECIPIENT],
-                        fail_silently=True,  # don't crash if email fails
+                        fail_silently=True,
                     )
                 except Exception:
                     pass  # email failed but review is already saved
