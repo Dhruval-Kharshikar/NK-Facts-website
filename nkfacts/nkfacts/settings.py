@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ── SECURITY ─────────────────────────────────────────────
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-nkfacts-dev-key-change-in-production')
 DEBUG      = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,.up.railway.app', cast=Csv())
 
 # ── APPS ─────────────────────────────────────────────────
 INSTALLED_APPS = [
@@ -53,7 +53,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'nkfacts.wsgi.application'
 
 # ── DATABASE ─────────────────────────────────────────────
-# Uses PostgreSQL on Render, SQLite locally
+# Uses PostgreSQL on Railway, SQLite locally
 DATABASE_URL = config('DATABASE_URL', default=None)
 if DATABASE_URL:
     DATABASES = {
@@ -104,10 +104,10 @@ EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = config('EMAIL_HOST_USER',     default='nkfacts.podcast@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='smoy azeg gqnv wjwo')
-DEFAULT_FROM_EMAIL  = 'NK Facts <nkfacts.podcast@gmail.com>'
-REVIEW_RECIPIENT    = config('REVIEW_RECIPIENT',    default='nkfacts.podcast@gmail.com')
+EMAIL_HOST_USER     = config('EMAIL_HOST_USER',     default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL',  default='NK Facts <nkfacts.podcast@gmail.com>')
+REVIEW_RECIPIENT    = config('REVIEW_RECIPIENT',    default='')
 
 # ── CUSTOM ERROR PAGES ────────────────────────────────────
 handler404 = 'podcasts.views.custom_404'
@@ -118,7 +118,7 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER        = True
     SECURE_CONTENT_TYPE_NOSNIFF      = True
     X_FRAME_OPTIONS                  = 'DENY'
-    SECURE_HSTS_SECONDS              = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS   = True
+    # SECURE_HSTS_SECONDS             = 31536000   # uncomment only after site is stable & HTTPS confirmed
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS  = True       # uncomment together with HSTS_SECONDS
     SESSION_COOKIE_SECURE            = True
     CSRF_COOKIE_SECURE               = True
